@@ -1,9 +1,10 @@
-package com.vn.entity;
+package com.vn.tour.entity;
 
 import java.sql.Date;
+import java.util.List;
 
-import com.vn.tpbank.entity.Customer;
-import com.vn.tpbank.entity.Department;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -51,12 +53,25 @@ public class Tour {
 	@JoinColumn(name = "guide_id", referencedColumnName = "id")
 	private TourGuide tourGuide;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "location_id", referencedColumnName = "id")
-	private Location location;
+//	@JsonManagedReference
+	@OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+	private List<Location> location;
+
+
+	public List<Location> getLocation() {
+		return location;
+	}
+
+	public void setLocation(List<Location> location) {
+		this.location = location;
+	}
+
+	public Tour() {
+		super();
+	}
 
 	public Tour(Long id, String tourName, String description, Long price, Long duration, Date timeStart, Date timeEnd,
-			Booking booking, TourGuide tourGuide, Location location) {
+			Booking booking, TourGuide tourGuide, List<Location> location) {
 		super();
 		this.id = id;
 		this.tourName = tourName;
@@ -141,14 +156,4 @@ public class Tour {
 	public void setTourGuide(TourGuide tourGuide) {
 		this.tourGuide = tourGuide;
 	}
-
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-	
-	
 }

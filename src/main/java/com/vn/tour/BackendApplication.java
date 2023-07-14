@@ -1,9 +1,11 @@
-package com.example.demo;
+package com.vn.tour;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+//@ComponentScan(basePackages = "com.vn")
 public class BackendApplication {
 
 	public static void main(String[] args) {

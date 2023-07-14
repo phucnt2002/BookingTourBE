@@ -1,4 +1,4 @@
-package com.vn.entity;
+package com.vn.tour.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,13 +19,20 @@ public class TourGuide {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tour_guide_seq")
     @SequenceGenerator(name = "tour_guide_seq", sequenceName = "tour_guide_seq",allocationSize = 1)
 	private Long id;
+	
 	@Column(name = "guide_name")
 	private String guideName;
+	
 	@Column(name = "guide_bio")
 	private String guideBio;
+	
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	private Account account;
+	
+	public TourGuide() {
+		super();
+	}
 	public TourGuide(Long id, String guideName, String guideBio, Account account) {
 		super();
 		this.id = id;

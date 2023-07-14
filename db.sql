@@ -82,6 +82,7 @@ address  VARCHAR2(500) NOT NULL,
 city  VARCHAR2(50) NOT NULL,
 country  VARCHAR2(50) NOT NULL,
 CONSTRAINT location_PK PRIMARY KEY(id)
+-- CONSTRAINT location_FK_tour FOREIGN KEY (tour_id) REFERENCES tour(id),
 );
 
 CREATE SEQUENCE location_seq START WITH 1 INCREMENT BY 1;
@@ -93,6 +94,7 @@ BEGIN
  SELECT location_seq.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 /
+
 
 DROP SEQUENCE tour_seq;
 
@@ -106,8 +108,10 @@ time_start DATE,
 time_end DATE,
 location_id NUMBER NOT NULL,
 guide_id NUMBER NOT NULL,
+booking_id NUMBER NOT NULL,
 CONSTRAINT tour_FK_location FOREIGN KEY (location_id) REFERENCES location(id),
 CONSTRAINT tour_FK_guide FOREIGN KEY (guide_id) REFERENCES tour_guide(id),
+-- CONSTRAINT tour_FK_booking FOREIGN KEY (booking_id) REFERENCES booking(id),
 CONSTRAINT tour_PK PRIMARY KEY(id)
 );
 
@@ -120,7 +124,6 @@ BEGIN
  SELECT tour_seq.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 /
-
 
 DROP SEQUENCE booking_seq;
 

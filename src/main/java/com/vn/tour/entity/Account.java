@@ -1,4 +1,4 @@
-package com.vn.entity;
+package com.vn.tour.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,19 +15,26 @@ public class Account {
 	@Column(name="id")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq")
     @SequenceGenerator(name = "account_seq", sequenceName = "account_seq",allocationSize = 1)
-	private Long accountIdLong;
+	private Long id;
+	
 	@Column(name = "user_name")
 	private String userName;
+	
 	@Column(name="pass_word")
 	private String password;
+	
 	@Column(name="role")
 	private String role;
+	
 	@Column(name = "status")
 	private String status;
 
+	public Account() {
+		super();
+	}
 	public Account(Long accountIdLong, String userName, String password, String role, String status) {
 		super();
-		this.accountIdLong = accountIdLong;
+		this.id = accountIdLong;
 		this.userName = userName;
 		this.password = password;
 		this.role = role;
@@ -39,11 +46,11 @@ public class Account {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Long getAccountIdLong() {
-		return accountIdLong;
+	public Long getId() {
+		return id;
 	}
-	public void setAccountIdLong(Long accountIdLong) {
-		this.accountIdLong = accountIdLong;
+	public void setId(Long accountIdLong) {
+		this.id = accountIdLong;
 	}
 	public String getUserName() {
 		return userName;

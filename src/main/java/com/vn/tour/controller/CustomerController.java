@@ -1,4 +1,4 @@
-package com.vn.controller;
+package com.vn.tour.controller;
 
 public class CustomerController {
 
