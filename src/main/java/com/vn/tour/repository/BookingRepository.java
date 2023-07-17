@@ -7,5 +7,5 @@ import com.vn.tour.entity.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-
+    public Booking findByCustomerId(Long id);
 }

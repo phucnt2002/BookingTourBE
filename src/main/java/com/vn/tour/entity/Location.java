@@ -1,15 +1,11 @@
 package com.vn.tour.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+import java.util.List;
+
 @Entity
 @Table(name = "location")
 public class Location {
@@ -30,10 +26,10 @@ public class Location {
 	
 	@Column(name = "country")
 	private String country;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "tour_id", referencedColumnName = "id")
-	private Tour tour;
+
+	@JsonIgnore
+	@ManyToMany(mappedBy = "locations")
+	private List<Tour> tours;
 	
 	
 	public Location() {
@@ -41,26 +37,22 @@ public class Location {
 	}
 
 
-	public Location(Long id, String locationName, String address, String city, String country, Tour tour) {
-		super();
+	public Location(Long id, String locationName, String address, String city, String country, List<Tour> tours) {
 		this.id = id;
 		this.locationName = locationName;
 		this.address = address;
 		this.city = city;
 		this.country = country;
-		this.tour = tour;
-	}
-	
-	
-	public Tour getTour() {
-		return tour;
+		this.tours = tours;
 	}
 
-
-	public void setTour(Tour tour) {
-		this.tour = tour;
+	public List<Tour> getTours() {
+		return tours;
 	}
 
+	public void setTours(List<Tour> tours) {
+		this.tours = tours;
+	}
 
 	public Long getId() {
 		return id;
@@ -92,6 +84,4 @@ public class Location {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	
-	
 }

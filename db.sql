@@ -1,4 +1,5 @@
 drop table booking;
+drop table tour_location;
 drop table tour;
 drop table location;
 drop table tour_guide;
@@ -77,7 +78,7 @@ DROP SEQUENCE location_seq;
 
 CREATE TABLE location(
 id NUMBER,
-location_name  VARCHAR2(100) NOT NULL,
+location_name  VARCHAR2(100) NOT NULL UNIQUE,
 address  VARCHAR2(500) NOT NULL,
 city  VARCHAR2(50) NOT NULL,
 country  VARCHAR2(50) NOT NULL,
@@ -104,14 +105,13 @@ tour_name  VARCHAR2(100) NOT NULL,
 description  VARCHAR2(4000) NOT NULL,
 price NUMBER,
 duration NUMBER,
+quality NUMBER,
 time_start DATE,
 time_end DATE,
-location_id NUMBER NOT NULL,
-guide_id NUMBER NOT NULL,
-booking_id NUMBER NOT NULL,
-CONSTRAINT tour_FK_location FOREIGN KEY (location_id) REFERENCES location(id),
+-- location_id NUMBER NOT NULL,
+guide_id NUMBER,
+-- CONSTRAINT tour_FK_location FOREIGN KEY (location_id) REFERENCES location(id),
 CONSTRAINT tour_FK_guide FOREIGN KEY (guide_id) REFERENCES tour_guide(id),
--- CONSTRAINT tour_FK_booking FOREIGN KEY (booking_id) REFERENCES booking(id),
 CONSTRAINT tour_PK PRIMARY KEY(id)
 );
 
@@ -124,6 +124,29 @@ BEGIN
  SELECT tour_seq.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 /
+
+DROP SEQUENCE tour_location_seq;
+
+CREATE TABLE tour_location(
+id NUMBER,
+tour_id NUMBER NOT NULL,
+location_id NUMBER NOT NULL,
+CONSTRAINT tour_location_FK_tour FOREIGN KEY (tour_id) REFERENCES tour(id),
+CONSTRAINT tour_location_FK_location FOREIGN KEY (location_id) REFERENCES location(id),
+CONSTRAINT tour_location_PK PRIMARY KEY(id)
+);
+
+CREATE SEQUENCE tour_location_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER tour_location_seq_tr
+ BEFORE INSERT ON tour_location FOR EACH ROW
+ WHEN (NEW.id IS NULL)
+BEGIN
+ SELECT tour_location_seq.NEXTVAL INTO :NEW.id FROM DUAL;
+END;
+/
+
+
 
 DROP SEQUENCE booking_seq;
 
@@ -147,4 +170,3 @@ BEGIN
  SELECT booking_seq.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 /
-
