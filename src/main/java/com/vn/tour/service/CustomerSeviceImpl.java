@@ -1,11 +1,10 @@
 package com.vn.tour.service;
 
-import com.vn.tour.entity.Account;
-import com.vn.tour.entity.Booking;
-import com.vn.tour.entity.Customer;
-import com.vn.tour.entity.ResponseObject;
+import com.vn.tour.entity.*;
 import com.vn.tour.repository.AccountRepository;
 import com.vn.tour.repository.BookingRepository;
+import com.vn.tour.repository.CustomerRepository;
+import com.vn.tour.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,10 @@ public class CustomerSeviceImpl implements ICustomerService {
     @Autowired
     BookingRepository bookingRepository;
 
+    @Autowired
+    TourRepository tourRepository;
+    @Autowired
+    CustomerRepository customerRepository;
     @Override
     public ResponseObject getBookingByCustomerId(Long id) {
         Booking booking = bookingRepository.findByCustomerId(id);
@@ -43,14 +46,23 @@ public class CustomerSeviceImpl implements ICustomerService {
     }
 
     @Override
-    public ResponseObject createBooking(Booking booking) {
-        try{
-            bookingRepository.save(booking);
-            System.out.println(booking.getTour().getId());
-            return new ResponseObject("ok", "Create booking successfully", booking);
-        }catch (Exception e){
-            return new ResponseObject("failed", "Can't create booking successfully"+e, booking);
+    public ResponseObject createBooking(Booking booking, Long tourId, Long customerId) {
+        Optional<Tour> tour = tourRepository.findById(tourId);
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if(tour.isEmpty()||customer.isEmpty()){
+            return new ResponseObject("failed", "Can't find tour or customer", "");
+        }else{
+            try{
+                booking.setTour(tour.get());
+                booking.setCustomer(customer.get());
+                bookingRepository.save(booking);
+                System.out.println(booking.getTour().getId());
+                return new ResponseObject("ok", "Create booking successfully", booking);
+            }catch (Exception e){
+                return new ResponseObject("failed", "Can't create booking successfully"+e, booking);
+            }
         }
+
     }
 
     @Override

@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.vn.tour.service.IAdminService;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/bookingtour/admin")
 public class AdminController {
 	@Autowired
 	IAdminService imAdminService;
-	@GetMapping("login")
+	@PostMapping("login")
 	public ResponseEntity<ResponseObject> login(@RequestBody Account account){
 		return ResponseEntity.status(HttpStatus.OK).body(imAdminService.login(account.getUserName(), account.getPassword()));
 	}

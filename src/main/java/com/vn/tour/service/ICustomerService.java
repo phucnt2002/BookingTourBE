@@ -9,7 +9,7 @@ public interface ICustomerService {
     public ResponseObject getBookingByCustomerId(Long id);
 
     public ResponseObject updatePassword(Account account);
-    public ResponseObject createBooking(Booking booking);
+    public ResponseObject createBooking(Booking booking, Long tourId, Long customerId);
     public ResponseObject updateBooking(Booking booking);
     public ResponseObject cancelBooking(Long id);
 
