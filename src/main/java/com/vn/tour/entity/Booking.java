@@ -31,7 +31,15 @@ public class Booking {
 	
 	@Column(name= "note")
 	private String note;
-	
+
+	@Column(name= "phone_number")
+	private String phoneNumber;
+
+	@Column(name= "name_customer")
+	private String nameCustomer;
+
+	@Column(name= "email")
+	private String email;
 //	@JsonManagedReference
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -47,12 +55,30 @@ public class Booking {
 		super();
 	}
 
-	public Booking(Long id, Date bookingDate, String note, Tour tour, Customer customer) {
+	public Booking(Long id, Date bookingDate, String note, String phoneNumber, String email, Tour tour, Customer customer) {
 		this.id = id;
 		this.bookingDate = bookingDate;
 		this.note = note;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
 		this.tour = tour;
 		this.customer = customer;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Long getId() {

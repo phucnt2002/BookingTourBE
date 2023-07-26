@@ -1,13 +1,21 @@
 package com.vn.tour.controller;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.ui.Model;
 import com.vn.tour.entity.*;
+import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.vn.tour.service.IAdminService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,7 +41,7 @@ public class AdminController {
 
 	@PostMapping("/createTour")
 	public ResponseEntity<ResponseObject> createTour(@RequestBody Tour tour) {
-		ResponseObject responseObject = imAdminService.createTour(tour.getTourName(), tour.getDescription(), tour.getPrice(), tour.getDuration(),tour.getQuality(), tour.getTimeStart(), tour.getTimeEnd(), tour.getLocation());
+		ResponseObject responseObject = imAdminService.createTour(tour.getTourName(), tour.getDescription(), tour.getPrice(), tour.getDuration(),tour.getQuality(), tour.getTimeStart(), tour.getTimeEnd(), tour.getImgURL(), tour.getLocation());
 		return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 	}
 
@@ -87,5 +95,30 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseObject);
 	}
 
+    @PostMapping("/v1/image")
+    public void uploadImage(@RequestParam("file") MultipartFile file) throws Exception {
+        // Kiểm tra xem file có tồn tại không.
+        String UPLOAD_DIR = "uploads/";
+        if (file.isEmpty()) {
+            throw new Exception("The file is empty.");
+        }
+
+        try {
+            // Lưu file.
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.write(path, bytes);
+        } catch (Exception e) {
+            throw new Exception("Failed to store the image.", e);
+        }
+    }
+
+	@PostMapping("/upload")
+	public String uploadFile(@RequestParam("image")MultipartFile multipartFile,
+							 Model model) throws IOException {
+		String imageURL = imAdminService.uploadFile(multipartFile);
+		model.addAttribute("imageURL",imageURL);
+		return imageURL;
+	}
 
 }

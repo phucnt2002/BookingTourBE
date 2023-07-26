@@ -1,11 +1,15 @@
 package com.vn.tour.service;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 
+import com.cloudinary.Cloudinary;
 import com.vn.tour.entity.*;
 import com.vn.tour.repository.*;
 import lombok.extern.java.Log;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class AdminServiceImpl implements IAdminService {
@@ -31,6 +36,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     LocationRepository locationRepository;
+    @Autowired
+    private Cloudinary cloudinary;
+
     @Override
     public ResponseObject login(String userName, String password) {
         // TODO Auto-generated method stub
@@ -89,7 +97,7 @@ public class AdminServiceImpl implements IAdminService {
 
     @Override
     public ResponseObject createCustomer(String firstName, String lastName,
-                                 String email, String phoneNumber, String address, Account account) {
+                                         String email, String phoneNumber, String address, Account account) {
         // TODO Auto-generated method stub
         Customer customer = new Customer(null, firstName, lastName, email, phoneNumber, address, account, null);
         if (accountRepository.findByUserName(account.getUserName()).isEmpty()) {
@@ -97,8 +105,7 @@ public class AdminServiceImpl implements IAdminService {
                 //  Block of code to try
                 customerRepository.save(customer);
                 return new ResponseObject("ok", "Create Account successfully", customer);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 return new ResponseObject("failed", e.toString(), customer);
             }
         } else {
@@ -115,8 +122,7 @@ public class AdminServiceImpl implements IAdminService {
                 //  Block of code to try
                 tourGuideRepository.save(tourGuide);
                 return new ResponseObject("ok", "Create Account successfully", tourGuide);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 return new ResponseObject("failed", e.toString(), tourGuide);
             }
         } else {
@@ -125,12 +131,12 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public ResponseObject createTour(String tourName, String description, Long price, Long duration,Long quantity, Date timeStart, Date timeEnd, List<Location> location) {
-        Tour tour = new Tour(null, tourName, description, price, duration, quantity, timeStart, timeEnd, null, null, location);
-        try{
+    public ResponseObject createTour(String tourName, String description, Long price, Long duration, Long quantity, Date timeStart, Date timeEnd, String imgURL,  List<Location> location) {
+        Tour tour = new Tour(null, tourName, description, price, duration, quantity, timeStart, timeEnd, imgURL, null, null, location);
+        try {
             tourRepository.save(tour);
             return new ResponseObject("ok", "Create a tour successfully", tour);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseObject("failed", "Cannot create a tour" + e.toString(), tour);
         }
     }
@@ -138,15 +144,15 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public ResponseObject createLocation(String locationName, String address, String city, String country) {
         // TODO Auto-generated method stub
-        if(locationRepository.findByLocationName(locationName).isEmpty()){
+        if (locationRepository.findByLocationName(locationName).isEmpty()) {
             Location location = new Location(null, locationName, address, city, country, null);
-            try{
+            try {
                 locationRepository.save(location);
                 return new ResponseObject("ok", "Create a location successfully", location);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return new ResponseObject("failed", "Cannot create a location", location);
             }
-        }else{
+        } else {
             return new ResponseObject("failed", "locationName is already", "");
         }
     }
@@ -154,9 +160,9 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public ResponseObject getAllTour() {
         List<Tour> tours = tourRepository.findAll();
-        if(tours.isEmpty()){
+        if (tours.isEmpty()) {
             return new ResponseObject("failed", "Cannot find ant record tour", "");
-        }else{
+        } else {
             return new ResponseObject("ok", "Get tours successfully", tours);
         }
     }
@@ -165,9 +171,9 @@ public class AdminServiceImpl implements IAdminService {
     public ResponseObject getAllCustomer() {
 
         List<Customer> customers = customerRepository.findAll();
-        if(customers.isEmpty()){
+        if (customers.isEmpty()) {
             return new ResponseObject("failed", "Cannot find any record Customer", "");
-        }else{
+        } else {
             return new ResponseObject("ok", "Get all Customer successfully", customers);
         }
     }
@@ -175,9 +181,9 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public ResponseObject getAllTourGuide() {
         List<TourGuide> tourGuide = tourGuideRepository.findAll();
-        if(tourGuide.isEmpty()){
+        if (tourGuide.isEmpty()) {
             return new ResponseObject("failed", "Cannot find any record tourGuide", "");
-        }else{
+        } else {
             return new ResponseObject("ok", "Get all tourGuide successfully", tourGuide);
         }
     }
@@ -185,9 +191,9 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public ResponseObject getAllLocation() {
         List<Location> locations = locationRepository.findAll();
-        if(locations.isEmpty()){
+        if (locations.isEmpty()) {
             return new ResponseObject("failed", "Cannot find ant record locations", "");
-        }else{
+        } else {
             return new ResponseObject("ok", "Get locations successfully", locations);
         }
     }
@@ -200,6 +206,15 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public ResponseObject updateLocation(Location location) {
         return null;
+    }
+
+    @Override
+    public String uploadFile(MultipartFile multipartFile) throws IOException {
+        return cloudinary.uploader()
+                .upload(multipartFile.getBytes(),
+                        Map.of("public_id","bookingTour/" + UUID.randomUUID().toString()))
+                .get("url")
+                .toString();
     }
 
     @Override

@@ -37,6 +37,8 @@ public class Tour {
 
     @Column(name = "time_end")
     private Date timeEnd;
+    @Column(name = "img_url")
+    private String imgURL;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<Booking> booking;
@@ -68,18 +70,27 @@ public class Tour {
         super();
     }
 
-    public Tour(Long id, String tourName, String description, Long price, Long duration, Long quantity, Date timeStart, Date timeEnd, List<Booking> booking, TourGuide tourGuide, List<Location> locations) {
+    public Tour(Long id, String tourName, String description, Long price, Long duration, Long quality, Date timeStart, Date timeEnd, String imgURL, List<Booking> booking, TourGuide tourGuide, List<Location> locations) {
         this.id = id;
         this.tourName = tourName;
         this.description = description;
         this.price = price;
         this.duration = duration;
-        this.quality = quantity;
+        this.quality = quality;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+        this.imgURL = imgURL;
         this.booking = booking;
         this.tourGuide = tourGuide;
         this.locations = locations;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
     }
 
     public Long getQuality() {

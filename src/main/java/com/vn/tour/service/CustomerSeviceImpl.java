@@ -8,6 +8,7 @@ import com.vn.tour.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class CustomerSeviceImpl implements ICustomerService {
     CustomerRepository customerRepository;
     @Override
     public ResponseObject getBookingByCustomerId(Long id) {
-        Booking booking = bookingRepository.findByCustomerId(id);
+        List<Booking> booking = bookingRepository.findByCustomerId(id);
         if(booking == null){
             return new ResponseObject("failed", "Customer didn't have any booking", "");
         }else{
@@ -52,15 +53,23 @@ public class CustomerSeviceImpl implements ICustomerService {
         if(tour.isEmpty()||customer.isEmpty()){
             return new ResponseObject("failed", "Can't find tour or customer", "");
         }else{
-            try{
-                booking.setTour(tour.get());
-                booking.setCustomer(customer.get());
-                bookingRepository.save(booking);
-                System.out.println(booking.getTour().getId());
-                return new ResponseObject("ok", "Create booking successfully", booking);
-            }catch (Exception e){
-                return new ResponseObject("failed", "Can't create booking successfully"+e, booking);
+            if(tour.get().getQuality()>0){
+                try{
+                    booking.setTour(tour.get());
+                    booking.setCustomer(customer.get());
+                    bookingRepository.save(booking);
+                    tour.get().setQuality(tour.get().getQuality()-1);
+                    Tour newTour = tour.get();
+                    tourRepository.save(newTour);
+                    System.out.println(booking.getTour().getId());
+                    return new ResponseObject("ok", "Create booking successfully", booking);
+                }catch (Exception e){
+                    return new ResponseObject("failed", "Can't create booking successfully"+e, booking);
+                }
+            }else{
+                return new ResponseObject("failed", "Tour was sold out", tour);
             }
+
         }
 
     }

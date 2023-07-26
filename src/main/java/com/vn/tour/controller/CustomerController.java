@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,4 +46,5 @@ public class CustomerController {
     public ResponseEntity<ResponseObject> cancelBooking(@PathVariable("id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(iCustomerService.cancelBooking(id));
     }
+
 }
