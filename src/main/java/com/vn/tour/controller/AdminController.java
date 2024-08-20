@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 import com.vn.tour.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -120,5 +121,9 @@ public class AdminController {
 		model.addAttribute("imageURL",imageURL);
 		return imageURL;
 	}
-
+	@GetMapping("/get-ip")
+	public String getClientIp(HttpServletRequest request) {
+		String ipAddress = request.getRemoteAddr();
+		return "Client IP address: " + ipAddress;
+	}
 }

@@ -5,6 +5,7 @@ com\vn\tour\entity\Account.class
 com\vn\tour\config\CloudinaryConfig.class
 com\vn\tour\repository\LocationRepository.class
 com\vn\tour\service\ITourGuideService.class
+com\vn\tour\ServletInitializer.class
 com\vn\tour\repository\AccountRepository.class
 com\vn\tour\service\AdminServiceImpl.class
 com\vn\tour\entity\Booking.class
